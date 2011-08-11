@@ -1,0 +1,55 @@
+#!/usr/bin/env ruby
+require 'optparse'
+require 'genmachine'
+
+BANNER = "Usage: genmachine [options] STATE_TABLE_FILES"
+
+# TODO: replace use of LANGUAGES
+options = {}
+opts = OptionParser.new do |opts|
+  opts.version = '0.0.1'
+  opts.banner = BANNER
+  opts.on('-c', '--classname NAME',
+          "Class/module/function name for generated library code "+
+          "(default STATE_TABLE_FILE)") do |v|
+    options[:classname] = v
+  end
+  opts.on('-l', '--language LANGUAGE',
+          "Language to generate code for- currently one of [#{LANGUAGES.join(',')}] " +
+          "(default #{LANGUAGES.first})") do |v|
+    options[:language] = v.underscore.to_sym
+  end
+  opts.on('-t', '--test-with FILE',
+          "Try parsing the specified file after generating the parser "+
+          "(default STATE_TABLE_FILE.gmtest if it exists)") do |v|
+    options[:test_file] = v
+  end
+  opts.on('-e', '--[no-]executable',
+          "Generate an executable parser (default true)") do |v|
+    options[:executable] = v
+  end
+end
+
+files = opts.parse(ARGV)
+if files.size < 1
+  $stderr.puts BANNER
+  exit 1
+end
+
+file_base = files[0].chomp(File.extname(files[0]))
+name_base = File.basename(file_base)
+options[:executable] ||= true
+options[:language]   ||= LANGUAGES.first
+options[:classname]  ||= name_base.capitalize + 'Parser'
+options[:test_file]  ||= files[0] + '.gmtest'
+class_fname = options[:classname].underscore + '.rb'
+exe_fname = name_base.underscore
+
+# TODO: Fix as per new structure
+#gm = GenMachine.new(files)
+#gm.build
+#gm.generate_class(options[:classname], class_fname, options[:language])
+#if options[:executable]
+#  gm.generate_executable(exe_fname, options[:language])
+#end
+
