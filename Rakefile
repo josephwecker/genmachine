@@ -17,8 +17,8 @@ Jeweler::Tasks.new do |gem|
   gem.name = "genmachine"
   gem.homepage = "http://github.com/josephwecker/genmachine"
   gem.license = "MIT"
-  gem.summary = %Q{TODO: one-line summary of your gem}
-  gem.description = %Q{TODO: longer description of your gem}
+  gem.summary = %Q{Generates parsers based on a fancy state-table}
+  gem.description = %Q{Takes a state table where the following are defined: state, input+conditions, accumulate-action, pre-transition-actions, and transition-to. It takes that state table and generates very fast parsers. Similar to Ragel. Currently only outputs pure Ruby.}
   gem.email = "joseph.wecker@gmail.com"
   gem.authors = ["Joseph Wecker"]
   # dependencies defined in Gemfile
