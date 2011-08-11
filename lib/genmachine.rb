@@ -1,14 +1,5 @@
 module GenMachine
-  class SpecParser
-    def initialize(files)
-      @files = files
-      @table = []
-    end
-  end
-
-  class Builder
-    def initialize
-
-    end
+  def available_output_languages
+    # TODO: Look in templates and for other registered output languages
   end
 end
