@@ -1,6 +1,12 @@
 = genmachine
 
-Description goes here.
+A fast state-machine based language-agnostic parser-generator, similar in
+spirit to Ragel and others. Currently outputs parsers in Ruby. Documentation
+coming eventually, but for now I'm getting this to a point where I can use it
+for parsing Udon documents.
+
+== Installing
++gem install genmachine+
 
 == Contributing to genmachine
  
@@ -14,6 +20,5 @@ Description goes here.
 
 == Copyright
 
-Copyright (c) 2011 Joseph Wecker. See LICENSE.txt for
-further details.
+Copyright (c) 2011 Joseph Wecker. See LICENSE.txt for further details.
 
