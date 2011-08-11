@@ -1,3 +1,5 @@
+# It's just for jeweler stuff - should be ok w/o the lock
+Gemfile.lock
 # rcov generated
 coverage
 
