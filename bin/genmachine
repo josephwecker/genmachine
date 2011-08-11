@@ -4,7 +4,9 @@ require 'genmachine'
 
 BANNER = "Usage: genmachine [options] STATE_TABLE_FILES"
 
-# TODO: replace use of LANGUAGES
+generators = GenMachine.generators
+languages = generators.keys
+
 options = {}
 opts = OptionParser.new do |opts|
   opts.version = '0.0.1'
@@ -15,9 +17,9 @@ opts = OptionParser.new do |opts|
     options[:classname] = v
   end
   opts.on('-l', '--language LANGUAGE',
-          "Language to generate code for- currently one of [#{LANGUAGES.join(',')}] " +
-          "(default #{LANGUAGES.first})") do |v|
-    options[:language] = v.underscore.to_sym
+          "Language to generate code for- currently one of [#{languages.join(',')}] " +
+          "(default #{languages.first})") do |v|
+    options[:language] = v.to_underscored.to_sym
   end
   opts.on('-t', '--test-with FILE',
           "Try parsing the specified file after generating the parser "+
@@ -27,6 +29,10 @@ opts = OptionParser.new do |opts|
   opts.on('-e', '--[no-]executable',
           "Generate an executable parser (default true)") do |v|
     options[:executable] = v
+  end
+  opts.on('-o', '--output-dir DIR',
+          "Output directory for generated file(s) (default ./)") do |v|
+    options[:output_dir] = v
   end
 end
 
@@ -39,17 +45,22 @@ end
 file_base = files[0].chomp(File.extname(files[0]))
 name_base = File.basename(file_base)
 options[:executable] ||= true
-options[:language]   ||= LANGUAGES.first
+options[:language]   ||= languages.first
 options[:classname]  ||= name_base.capitalize + 'Parser'
 options[:test_file]  ||= files[0] + '.gmtest'
-class_fname = options[:classname].underscore + '.rb'
-exe_fname = name_base.underscore
+options[:output_dif] ||= './'
+options[:class_fname]  = options[:classname].to_underscored + '.rb'
+options[:exe_fname]    = name_base.to_underscored
 
-# TODO: Fix as per new structure
-#gm = GenMachine.new(files)
-#gm.build
-#gm.generate_class(options[:classname], class_fname, options[:language])
-#if options[:executable]
-#  gm.generate_executable(exe_fname, options[:language])
-#end
+unless languages.include? options[:language]
+  $stderr.puts "I don't know how to generate a parser in '#{options[:language]}' - try one of [#{languages.join(',')}]"
+  exit 2
+end
 
+#spec_parser = GenMachine::SpecParser.new(files)
+#options[:spec_ast] = spec_parser.build
+options[:spec_ast] = []
+gen = generators[options[:language]].new(options)
+gen.generate_class
+gen.generate_executable
+gen.run_test

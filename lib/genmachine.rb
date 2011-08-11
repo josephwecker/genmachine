@@ -9,8 +9,14 @@ end
 
 module GenMachine
   class << self
-    def languages
-      GenMachine::Generators.constants.map{|const| const.to_underscored}.delete_if{|c| c=='generator'}
+    def generators
+      Generators.constants.reduce({}) do |langs,const|
+        klass = Generators.const_get(const)
+        if klass.const_defined?('GENMACHINE_TARGET')
+          langs[klass::GENMACHINE_TARGET] = klass
+        end
+        langs
+      end
     end
   end
 end
