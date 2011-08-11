@@ -1,5 +1,5 @@
 module GenMachine
-  class Builder
+  class Generator
     require 'erb'
     def initialize
 
