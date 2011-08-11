@@ -6,7 +6,7 @@ coming eventually, but for now I'm getting this to a point where I can use it
 for parsing Udon documents.
 
 == Installing
-+gem install genmachine+
+# gem install genmachine
 
 == Contributing to genmachine
  
