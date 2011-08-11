@@ -1,18 +1,18 @@
-module GenMachine
-  class String
-    def to_underscored(str)
-      str.gsub(/::/, '/').
-      gsub(/([A-Z]+)([A-Z][a-z])/,'\1_\2').
-      gsub(/([a-z\d])([A-Z])/,'\1_\2').
-      gsub(/[^a-zA-Z\d_]/,'_').
-      downcase
-    end
-
-    def to_utf8_char_array
-      self.unpack("U*")
-    end
+class String
+  def to_underscored
+    self.gsub(/::/, '/').
+    gsub(/([A-Z]+)([A-Z][a-z])/,'\1_\2').
+    gsub(/([a-z\d])([A-Z])/,'\1_\2').
+    gsub(/[^a-zA-Z\d_]/,'_').
+    downcase
   end
 
+  def to_utf8_char_array
+    self.unpack("U*")
+  end
+end
+
+module GenMachine
   module Helpers
     module General
       def accumulates?(states)

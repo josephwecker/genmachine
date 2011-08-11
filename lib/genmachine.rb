@@ -8,7 +8,9 @@ Dir[File.join(File.dirname(__FILE__),'genmachine','generators','*.rb')].each do 
 end
 
 module GenMachine
-  def languages
-    GenMachine::Generators.constants.map{|const| underscore(const)}
+  class << self
+    def languages
+      GenMachine::Generators.constants.map{|const| const.to_underscored}.delete_if{|c| c=='generator'}
+    end
   end
 end
