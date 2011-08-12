@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{genmachine}
-  s.version = "0.0.1"
+  s.version = "0.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Joseph Wecker"]
@@ -33,6 +33,7 @@ Gem::Specification.new do |s|
     "lib/genmachine/generators/helpers/general.rb",
     "lib/genmachine/generators/helpers/ruby.rb",
     "lib/genmachine/generators/ruby.rb",
+    "lib/genmachine/generators/templates/ruby/executable.erb",
     "lib/genmachine/generators/templates/ruby/lib.erb.rb",
     "lib/genmachine/spec_parser.rb",
     "test/helper.rb",
