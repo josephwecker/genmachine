@@ -52,7 +52,7 @@ module GenMachine
       end
 
       def rb_transition_commands(st,currstate)
-        st = st.strip.split(';').map{|s|s.strip}
+        st = st.strip.split(';').map(&:strip)
         out = []
         add_next = false
         st.each do |s|
