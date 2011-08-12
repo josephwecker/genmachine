@@ -23,7 +23,7 @@ module GenMachine
       def generate_executable
         executable = ERB.new(IO.read(@template_base+'executable.erb'),nil,'-')
         f = File.new(@exe_fname, 'w+')
-        f.write(@exe_fname.result(binding))
+        f.write(executable.result(binding))
         f.chmod(0755)
         f.close
       end
