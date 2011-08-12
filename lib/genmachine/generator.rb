@@ -11,33 +11,20 @@ module GenMachine
         @class_fname    = opts.delete(:class_fname)|| @classname.to_underscored
         @exe_fname      = opts.delete(:exe_fname)  || @classname.sub(/parser$/i,'').to_underscored
         raise ArgumentError, "Must include the table specification data (:spec_ast)" if @spec_ast.nil?
-        #template_base = File.expand_path(File.dirname(__FILE__))+'/templates/'
-        #LANGUAGES.each do |lang|
-        #  tbase = template_base + lang.to_s + '/'
-        #  @libraries[lang] = ERB.new(IO.read(tbase+'library.erb.rb'),nil,'-')
-        #  @executables[lang] = ERB.new(IO.read(tbase+'executable.erb'),nil,'-')
-        #end
       end
 
       def generate_class
-        puts "Generate class (#{@classname}): #{@class_fname}"
-        #f = File.new(@class_fname, 'w+')
-        #f.write(@libraries[language].result(binding))
-        #f.close
+        puts "TODO: Generate class (#{@classname}): #{@class_fname}"
       end
 
       def generate_executable
         return unless @gen_executable
-        puts "Generate executable: #{@exe_fname}"
-        #f = File.new(@exe_fname, 'w+')
-        #f.write(@executables[language].result(binding))
-        #f.chmod(0755)
-        #f.close
+        puts "TODO: Generate executable: #{@exe_fname}"
       end
 
       def run_test
         return if @test_file.nil?
-        puts "Run test"
+        puts "TODO: Run test"
       end
     end
   end

@@ -1,7 +1,7 @@
 require 'strscan'
 $KCODE="U"
 
-module <%= classname %>
+module <%= @classname %>
   def self.parse(str) Parser.new(str).parse end
   def self.parse_file(fname) Parser.new(IO.read(fname)).parse end
 
@@ -61,7 +61,7 @@ module <%= classname %>
       @pos = 1
       @leading = true
       @indent = 0
-      @ast = <%= @table[0][0] %>
+      @ast = <%= @spec_ast[0][0] %>
       return @ast
     end
 
@@ -115,7 +115,7 @@ module <%= classname %>
 
     def eof?() return @last_c == :eof end
 
-<%- @table.each do |name, args, cmds, first_state, states| -%>
+<%- @spec_ast.each do |name, args, cmds, first_state, states| -%>
   <%- args << "p=nil" -%>
   <%- args << "name='#{name}'" -%>
     def <%= name %>(<%= args.join(',') %>)
@@ -170,6 +170,7 @@ module <%= classname %>
         <%- end -%>
       end
     end
+
 <%- end -%>
   end
 end
