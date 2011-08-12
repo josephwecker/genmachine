@@ -35,8 +35,8 @@ module GenMachine
     def include_char(char) include_range(char,char) end
 
     def include_range(from, to)
-      from = from.utf8_chars[0] if from.is_a?(String)
-      to = to.utf8_chars[0] if to.is_a?(String)
+      from = from.to_utf8_char_array[0] if from.is_a?(String)
+      to = to.to_utf8_char_array[0] if to.is_a?(String)
       @include_intervals << [from,to].sort
       if @include_intervals.length > 1
         @include_intervals.sort!

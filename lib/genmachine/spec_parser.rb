@@ -6,14 +6,6 @@ module GenMachine
     def initialize(files)
       @table = []
       @files = files
-      @libraries = {}
-      @executables = {}
-      template_base = File.expand_path(File.dirname(__FILE__))+'/templates/'
-      LANGUAGES.each do |lang|
-        tbase = template_base + lang.to_s + '/'
-        @libraries[lang] = ERB.new(IO.read(tbase+'library.erb.rb'),nil,'-')
-        @executables[lang] = ERB.new(IO.read(tbase+'executable.erb'),nil,'-')
-      end
     end
 
     def build
@@ -25,14 +17,14 @@ module GenMachine
           det = line[0..0]
           if det == '|' or det == ':'
             re = (det=='|' ? '\|' : det) + '(?: |$)'
-            cols = line.split(/#{re}/,-1)[1..-1].map{|c| c.strip}
+            cols = line.split(/#{re}/,-1)[1..-1].map(&:strip)
             if det=='|' && cols[0].include?('(')
               new_fun = true
               unless c_name.nil?
                 @table << [c_name, c_args, c_cmds, c_first_state, process_states(c_states)]
               end
               parts = cols[0].split('(')
-              c_name = parts.shift.underscore
+              c_name = parts.shift.to_underscored
               c_args = parts.join('(').sub(/\)$/,'').split(',')
               c_states = []
               c_cmds = (cols[3]||'').split(';')
@@ -49,7 +41,7 @@ module GenMachine
                            :input => inputs,
                            :cond  => conditionals,
                            :acc   => cols[2],
-                           :exprs => (cols[3]||'').split(';'),
+                           :exprs => (cols[3]||'').split(';').map(&:strip),
                            :next  => cols[4]}
             elsif det == ':' && (c_states.size > 0)
               conditionals, inputs = parse_input(cols[1],c_states[-1][:input])
@@ -57,7 +49,7 @@ module GenMachine
               c_states[-1][:input] = inputs
               c_states[-1][:cond] += conditionals
               c_states[-1][:acc]  += cols[2]
-              c_states[-1][:exprs]+= (cols[3]||'').split(';')
+              c_states[-1][:exprs]+= (cols[3]||'').split(';').map(&:strip)
               c_states[-1][:next] += cols[4]
             end
           end
@@ -66,7 +58,9 @@ module GenMachine
           @table << [c_name, c_args, c_cmds, c_first_state, process_states(c_states)]
         end
       end
+      require 'pp'
       pp @table
+      return @table
     end
 
     # consolidate same-name states and (eventually) combine / optimize where

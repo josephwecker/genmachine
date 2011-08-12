@@ -57,9 +57,8 @@ unless languages.include? options[:language]
   exit 2
 end
 
-#spec_parser = GenMachine::SpecParser.new(files)
-#options[:spec_ast] = spec_parser.build
-options[:spec_ast] = []
+spec_parser = GenMachine::SpecParser.new(files)
+options[:spec_ast] = spec_parser.build
 gen = generators[options[:language]].new(options)
 gen.generate_class
 gen.generate_executable
