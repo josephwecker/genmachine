@@ -21,10 +21,11 @@ module GenMachine
       end
 
       def generate_executable
-        #f = File.new(@class_fname, 'w+')
-        #f.write(@libraries[language].result(binding))
-        #f.close
-        #  @executables[lang] = ERB.new(IO.read(tbase+'executable.erb'),nil,'-')
+        executable = ERB.new(IO.read(@template_base+'executable.erb'),nil,'-')
+        f = File.new(@exe_fname, 'w+')
+        f.write(@exe_fname.result(binding))
+        f.chmod(0755)
+        f.close
       end
     end
   end
