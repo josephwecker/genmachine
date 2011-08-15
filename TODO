@@ -1,0 +1,6 @@
+ - mechanism for simple nondeterminism
+ - syn highlight
+ - parser generator implementation notes / examples
+ - bootstrap a real spec parser with a real intermediate language
+ - full test suite that languages can essentially inherit from for testing
+   their implementations.
