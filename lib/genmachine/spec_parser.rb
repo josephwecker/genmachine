@@ -3,9 +3,10 @@ module GenMachine
   # it'll eventually be replaced when the real parser is written as a
   # genmachine table.
   class SpecParser
-    def initialize(files)
+    def initialize(files,opts)
       @table = []
       @files = files
+      @opts = opts
     end
 
     def build
@@ -58,8 +59,10 @@ module GenMachine
           @table << [c_name, c_args, c_cmds, c_first_state, process_states(c_states)]
         end
       end
-      require 'pp'
-      pp @table
+      if @opts[:debug]
+        require 'pp'
+        pp @table
+      end
       return @table
     end
 

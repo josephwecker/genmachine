@@ -11,29 +11,16 @@ options = {}
 opts = OptionParser.new do |opts|
   opts.version = GenMachine.version
   opts.banner = BANNER
-  opts.on('-c', '--classname NAME',
-          "Class/module/function name for generated library code "+
-          "(default STATE_TABLE_FILE)") do |v|
-    options[:classname] = v
-  end
+  opts.on('-d', '--[no-]debug', "Verbose debug mode.") {|v| options[:debug] = v}
+  opts.on('-c', '--classname NAME', "Class/module/function name for generated library code "+
+          "(default STATE_TABLE_FILE)") {|v| options[:classname] = v}
   opts.on('-l', '--language LANGUAGE',
           "Language to generate code for- currently one of [#{languages.join(',')}] " +
-          "(default #{languages.first})") do |v|
-    options[:language] = v.to_underscored
-  end
-  opts.on('-t', '--test-with FILE',
-          "Try parsing the specified file after generating the parser "+
-          "(default STATE_TABLE_FILE.gmtest if it exists)") do |v|
-    options[:test_file] = v
-  end
-  opts.on('-e', '--[no-]executable',
-          "Generate an executable parser (default true)") do |v|
-    options[:executable] = v
-  end
-  opts.on('-o', '--output-dir DIR',
-          "Output directory for generated file(s) (default ./)") do |v|
-    options[:output_dir] = v
-  end
+          "(default #{languages.first})"){|v|options[:language]=v.to_underscored}
+  opts.on('-t', '--test-with FILE', "Try parsing the specified file after generating the parser "+
+          "(default STATE_TABLE_FILE.gmtest if it exists)"){|v|options[:test_file]=v}
+  opts.on('-e','--[no-]executable',"Generate an executable parser (default true)"){|v|options[:executable]=v}
+  opts.on('-o','--output-dir DIR',"Output directory for generated file(s) (default ./)"){|v|options[:output_dir]=v}
 end
 
 files = opts.parse(ARGV)
@@ -44,7 +31,8 @@ end
 
 file_base = files[0].chomp(File.extname(files[0]))
 name_base = File.basename(file_base)
-options[:executable] ||= true
+options[:debug]        = false if options[:debug].nil?
+options[:executable]   = true  if options[:executable].nil?
 options[:language]   ||= languages.first
 options[:classname]  ||= name_base.capitalize + 'Parser'
 options[:test_file]  ||= files[0] + '.gmtest'
@@ -57,7 +45,7 @@ unless languages.include? options[:language]
   exit 2
 end
 
-spec_parser = GenMachine::SpecParser.new(files)
+spec_parser = GenMachine::SpecParser.new(files,options)
 options[:spec_ast] = spec_parser.build
 gen = generators[options[:language]].new(options)
 gen.generate_class
