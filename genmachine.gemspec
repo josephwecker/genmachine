@@ -5,18 +5,19 @@
 
 Gem::Specification.new do |s|
   s.name = %q{genmachine}
-  s.version = "0.1.0"
+  s.version = "0.1.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Joseph Wecker"]
-  s.date = %q{2011-08-11}
+  s.date = %q{2011-08-15}
   s.default_executable = %q{genmachine}
   s.description = %q{Takes a state table where the following are defined: state, input+conditions, accumulate-action, pre-transition-actions, and transition-to. It takes that state table and generates very fast parsers. Similar to Ragel. Currently only outputs pure Ruby.}
   s.email = %q{joseph.wecker@gmail.com}
   s.executables = ["genmachine"]
   s.extra_rdoc_files = [
     "LICENSE.txt",
-    "README.rdoc"
+    "README.rdoc",
+    "TODO"
   ]
   s.files = [
     ".document",
@@ -24,6 +25,7 @@ Gem::Specification.new do |s|
     "LICENSE.txt",
     "README.rdoc",
     "Rakefile",
+    "TODO",
     "VERSION",
     "bin/genmachine",
     "genmachine.gemspec",
@@ -36,6 +38,7 @@ Gem::Specification.new do |s|
     "lib/genmachine/generators/templates/ruby/executable.erb",
     "lib/genmachine/generators/templates/ruby/lib.erb.rb",
     "lib/genmachine/spec_parser.rb",
+    "misc/genmachine.vim",
     "test/helper.rb",
     "test/test_genmachine.rb"
   ]
