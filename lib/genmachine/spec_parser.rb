@@ -107,7 +107,8 @@ module GenMachine
                '\r' => "\r", '\f' => "\f",
                '\b' => "\b", '\a' => "\a",
                '\e' => "\e", '\s' => " ",
-               '\[' => '[',  '\]' => ']'}
+               '\[' => '[',  '\]' => ']',
+               "\\\\" => '\\'}
     def parse_combine_ranges(raw, input)
       raw.gsub!(/\\[tnrfbaes\[\]]/){|m| ESCAPES[m]}
       if raw =~ /((?:.-.)*)((?:.)*)/um
