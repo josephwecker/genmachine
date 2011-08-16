@@ -9,6 +9,7 @@ Dir[File.join(File.dirname(__FILE__),'genmachine','generators','*.rb')].each do 
 end
 
 module GenMachine
+  VERSION = File.exist?(File.join(File.dirname(__FILE__),'VERSION')) ? File.read(File.join(File.dirname(__FILE__),'VERSION')) : ""
   class << self
     def generators
       Generators.constants.reduce({}) do |langs,const|
@@ -19,5 +20,7 @@ module GenMachine
         langs
       end
     end
+
+    def version() VERSION end
   end
 end

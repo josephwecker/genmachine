@@ -9,7 +9,7 @@ languages = generators.keys
 
 options = {}
 opts = OptionParser.new do |opts|
-  opts.version = '0.0.1'
+  opts.version = GenMachine.version
   opts.banner = BANNER
   opts.on('-c', '--classname NAME',
           "Class/module/function name for generated library code "+
