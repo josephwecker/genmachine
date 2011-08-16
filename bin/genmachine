@@ -36,7 +36,7 @@ options[:executable]   = true  if options[:executable].nil?
 options[:language]   ||= languages.first
 options[:classname]  ||= name_base.capitalize + 'Parser'
 options[:test_file]  ||= files[0] + '.gmtest'
-options[:output_dif] ||= './'
+options[:output_dir] ||= './'
 options[:class_fname]  = options[:classname].to_underscored + '.rb'
 options[:exe_fname]    = name_base.to_underscored
 
