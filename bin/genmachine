@@ -19,7 +19,7 @@ opts = OptionParser.new do |opts|
   opts.on('-l', '--language LANGUAGE',
           "Language to generate code for- currently one of [#{languages.join(',')}] " +
           "(default #{languages.first})") do |v|
-    options[:language] = v.to_underscored.to_sym
+    options[:language] = v.to_underscored
   end
   opts.on('-t', '--test-with FILE',
           "Try parsing the specified file after generating the parser "+
