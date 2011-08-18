@@ -27,7 +27,7 @@ module GenMachine
               outs << case range
                       when 0x0a; 'nl?'
                       when 0x20; 'space?'
-                      when :any; has_eof_state ? 'true' : 'c!=:eof'
+                      when :any; has_eof_state ? 'true' : '!eof?'
                       else "c==#{range}" end
             end
           end
