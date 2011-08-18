@@ -10,7 +10,7 @@ module GenMachine
     end
 
     def build
-      c_name = c_args = c_cmds = c_first_state = c_states = nil
+      c_name = c_type = c_args = c_cmds = c_first_state = c_states = nil
       new_fun = false
       @files.each do |fname|
         File.new(fname,'r').each_with_index do |line, line_no|
@@ -22,11 +22,13 @@ module GenMachine
             if det=='|' && cols[0].include?('(')
               new_fun = true
               unless c_name.nil?
-                @table << [c_name, c_args, c_cmds, c_first_state, process_states(c_states)]
+                @table << [c_name, c_type, c_args, c_cmds, c_first_state, process_states(c_states)]
               end
               parts = cols[0].split('(')
               c_name = parts.shift.to_underscored
-              c_args = parts.join('(').sub(/\)$/,'').split(',')
+              c_args, c_type = parts.join('(').split(/::(U|\[\]|\{\})$/)
+              c_args = c_args[0..-2].split(',')
+              c_type ||= '[]'
               c_states = []
               c_cmds = (cols[3]||'').split(';')
               c_first_state = cols[4]
@@ -56,7 +58,7 @@ module GenMachine
           end
         end
         unless c_name.nil?
-          @table << [c_name, c_args, c_cmds, c_first_state, process_states(c_states)]
+          @table << [c_name, c_type, c_args, c_cmds, c_first_state, process_states(c_states)]
         end
       end
       if @opts[:debug]
