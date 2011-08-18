@@ -9,6 +9,16 @@ module <%= @classname %>
     def <<(kv) k,v = kv; self[k] = v end
   end
 
+  class UString < String
+    def <<(v)
+      begin
+        super(v)
+      rescue
+        super([v].pack('U*'))
+      end
+    end
+  end
+
   class UNode
     attr_accessor :name, :m,:a,:c
     def initialize(params={})
@@ -138,7 +148,7 @@ module <%= @classname %>
         <%- end -%>
       <%- end -%>
       <%- accumulators(states).each do |_acc| -%>
-      <%= _acc %> ||= ''
+      <%= _acc %> ||= UString.new
       <%- end -%>
       loop do
         c = nextchar

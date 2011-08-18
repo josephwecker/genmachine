@@ -108,7 +108,7 @@ module GenMachine
           value = rb_vars(value)
           if clear_it
             out = ["(#{into}<<#{value} if #{value}.size>0)"]
-            out << "#{value}=''"
+            out << "#{value}=UString.new"
           else
             out = ["#{into}<<#{value}"]
           end
