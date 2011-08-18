@@ -87,12 +87,12 @@ module <%= @classname %>
         @leading = true; @indent = 0
       when 0x0a
         nc = peek(1).unpack('U')[0]
-        if nc == 0x0d then getch; c = 0x0a0d end
+        if nc == 0x0d then getch; c = "\n\r" end
         @last_is_newline = true; @line += 1; @pos = 1
         @leading = true; @indent = 0
       when 0x0d
         nc = peek(1).unpack('U')[0]
-        if nc == 0x0a then getch; c = 0x0d0a end
+        if nc == 0x0a then getch; c = "\r\n" end
         @last_is_newline = true; @line += 1; @pos = 1
         @leading = true; @indent = 0
       when 0x20
