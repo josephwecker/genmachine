@@ -130,7 +130,7 @@ module <%= @classname %>
         if nc == 0x0a then getch; c = UString.new("\r\n") end
         @last_is_newline = true; @line += 1; @pos = 1
         @leading = true; @indent = 0
-      when 0x20
+      when 0x20,0x09
         @indent += 1 if @leading
         @last_is_space = true; @pos += 1
       else @leading = false; @pos += 1 end
