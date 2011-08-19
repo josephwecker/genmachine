@@ -12,9 +12,9 @@ module <%= @classname %>
   class UString < String
     def <<(v)
       begin
-        super(v)
-      rescue
         super([v].pack('U*'))
+      rescue
+        super(v)
       end
     end
   end
