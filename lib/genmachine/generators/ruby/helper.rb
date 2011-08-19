@@ -1,6 +1,9 @@
 module GenMachine
   module Helpers
     module Ruby
+      INPUT = '__i'
+      STATE = '__state'
+
       def rb_conditional(clause,states,clauses)
         has_eof_state = eof_state?(states) || eof_clause?(clauses)
         out = ''
@@ -22,13 +25,13 @@ module GenMachine
             if range.is_a? Array
               outs << "nl?" if (range[0] <= 0x0a) && (range[1] >= 0x0a)
               outs << "space?" if (range[0] <= 0x20) && (range[1] >= 0x20)
-              outs << "(c>#{range[0]-1}&&c<#{range[1]+1})"
+              outs << "(#{INPUT}>#{range[0]-1}&&#{INPUT}<#{range[1]+1})"
             else
               outs << case range
                       when 0x0a; 'nl?'
                       when 0x20; 'space?'
                       when :any; has_eof_state ? 'true' : '!eof?'
-                      else "c==#{range}" end
+                      else "#{INPUT}==#{range}" end
             end
           end
         end
@@ -63,7 +66,7 @@ module GenMachine
             params = $3.split(',').map{|p|rb_vars(p)}
             params << 's'
             params << "'#{rename}'" unless (rename.nil? or rename.strip=='')
-            out << "state=#{funname}(#{params.join(',')})"
+            out << "#{STATE}=#{funname}(#{params.join(',')})"
             add_next = true
           when s =~ /^<done>$/
             out << "return(s)"
@@ -72,7 +75,7 @@ module GenMachine
             out << "return(#{rb_vars($1)})"
             add_next = false
           when s =~ /^(:[a-zA-Z0-9_:-]+)$/
-            out << "state='#{$1}'" unless currstate == $1
+            out << "#{STATE}='#{$1}'" unless currstate == $1
             add_next = true
           else
             out << s
@@ -91,7 +94,7 @@ module GenMachine
         when (acc_phrase.nil? or acc_phrase == ''); return ['@fwd=true']
         when acc_phrase.strip == '<<'; return []
         when acc_phrase.strip =~ /^([a-zA-Z_][a-zA-Z0-9_]*)\s*<<\s*$/
-          return ["#{rb_vars(acc_phrase.strip)}c"]
+          return ["#{rb_vars(acc_phrase.strip)}#{INPUT}"]
         else raise("Can't figure out your accumulator statement: #{acc_phrase}")
         end
       end

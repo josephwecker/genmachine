@@ -137,7 +137,7 @@ module <%= @classname %>
       <%- cmds.each do |c| -%>
       <%= rb_vars(c) %>
       <%- end -%>
-      state='<%= first_state %>'
+      <%=STATE%>='<%= first_state %>'
       <%- if states.size > 1 or accumulates?(states) or makes_calls?(states) -%>
         <%- if otype == 'U' -%>
       s = UNode.new(:name=>name,:sline=>@line,:schr=>@pos)
@@ -151,12 +151,12 @@ module <%= @classname %>
       <%= _acc %> ||= UString.new
       <%- end -%>
       loop do
-        c = nextchar
+        <%= INPUT %> = nextchar
         <%- has_fallthru = false -%>
         <%- if eof_state?(states) -%>
-        state = '{eof}' if c==:eof
+        <%=STATE%> = '{eof}' if <%= INPUT %>==:eof
         <%- end -%>
-        case state
+        case <%=STATE%>
         <%- states.each do |st_name, clauses| -%>
         when '<%= st_name %>'
           <%- if clauses.size > 1 -%>
@@ -185,7 +185,7 @@ module <%= @classname %>
         <%- end -%>
         end
         <%- if has_fallthru -%>
-        error("Unexpected #{c}")
+        error("Unexpected #{<%= INPUT %>}")
         @fwd = true
         return
         <%- end -%>
