@@ -44,7 +44,7 @@ module GenMachine
         cmds = []
         cmds += rb_simple_acc_commands(clause[:acc])
         clause[:exprs].each do |expr|
-          if expr.include? '<<'
+          if expr.include? '>>'
             cmds += rb_acc_commands(expr)
           else
             cmds << rb_vars(expr.strip)
@@ -92,30 +92,23 @@ module GenMachine
       def rb_simple_acc_commands(acc_phrase)
         case
         when (acc_phrase.nil? or acc_phrase == ''); return ['@fwd=true']
-        when acc_phrase.strip == '<<'; return []
-        when acc_phrase.strip =~ /^([a-zA-Z_][a-zA-Z0-9_]*)\s*<<\s*$/
-          return ["#{rb_vars(acc_phrase.strip)}#{INPUT}"]
+        when acc_phrase.strip == '>>'; return []
+        when acc_phrase =~ /^\s*>>\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*$/
+          return ["#{INPUT}.into(#{rb_vars($1)})"]
         else raise("Can't figure out your accumulator statement: #{acc_phrase}")
         end
       end
 
       def rb_acc_commands(acc_phrase)
         case
-        when (acc_phrase.nil? or acc_phrase == ''); return ['@fwd=true']
-        when acc_phrase.strip == '<<'; return []
-        when acc_phrase.strip =~ /^([a-zA-Z_][a-zA-Z0-9_]*)\s*<<\s*(<?)([a-zA-Z_][a-zA-Z0-9_]*)$/
-          into = $1
-          value = $3
-          clear_it = $2 == '<'
-          into = rb_vars(into)
-          value = rb_vars(value)
-          if clear_it
-            out = ["(#{into}<<#{value} if #{value}.size>0)"]
-            out << "#{value}=UString.new"
-          else
-            out = ["#{into}<<#{value}"]
-          end
-          return out
+        when (acc_phrase.nil? or acc_phrase == '')
+          return ['@fwd=true']
+        when acc_phrase.strip == '>>'
+          return []
+        when acc_phrase =~ /^\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*>>\s*$/
+          return ["#{rb_vars($1)}.reset!"]
+        when acc_phrase =~ /^\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*>>\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*$/
+          return ["#{rb_vars($1)}.into(#{rb_vars($2)})"]
         else raise("Can't figure out your accumulator statement: #{acc_phrase}")
         end
       end

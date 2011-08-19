@@ -19,7 +19,7 @@ module GenMachine
         states.each do |name,clauses|
           clauses.each do |c|
             c[:exprs].each do |e|
-              return true if e =~ /<<s($|[^a-zA-Z0-9_])/
+              return true if e =~ /\bs\s*>>/
             end
           end
         end
@@ -33,7 +33,7 @@ module GenMachine
             exprs = c[:exprs].dup
             exprs << c[:acc].dup
             exprs.each do |e|
-              if e =~ /^([a-zA-Z_][a-zA-Z0-9_]*)?\s*<<\s*(<?)([a-zA-Z_][a-zA-Z0-9_]*)?$/
+              if e =~ /^([a-zA-Z_][a-zA-Z0-9_]*)?\s*>>\s*([a-zA-Z_][a-zA-Z0-9_]*)?$/
                 accs[$1]=true unless ($1.nil? or $1 == '' or $1 == 'p' or $1 == 's')
                 accs[$3]=true unless ($3.nil? or $3 == '' or $3 == 'p' or $3 == 's')
               end
