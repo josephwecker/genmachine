@@ -2,14 +2,16 @@ module GenMachine
   module Generators
     class RubyGenerator
       require 'erb'
-      require 'genmachine/generators/helpers/ruby'
+      require 'genmachine/generators/generator'
+      require 'genmachine/generators/general_helper'
+      require 'genmachine/generators/ruby/helper'
       include Generator
       include GenMachine::Helpers::Ruby
       include GenMachine::Helpers::General
       GENMACHINE_TARGET = 'ruby'
 
       def initialize(opts)
-        @template_base = File.expand_path(File.dirname(__FILE__))+'/templates/ruby/'
+        @template_base = File.dirname(__FILE__) + '/'
         super(opts)
       end
 

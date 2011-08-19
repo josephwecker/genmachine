@@ -1,11 +1,11 @@
 require 'genmachine/spec_parser'
-require 'genmachine/generator'
-require 'genmachine/generators/helpers/general'
 require 'genmachine/char_set'
 
-Dir[File.join(File.dirname(__FILE__),'genmachine','generators','*.rb')].each do |fname|
-  name = File.basename(fname)
-  require "genmachine/generators/#{name}"
+Dir[File.join(File.dirname(__FILE__),'genmachine','generators','*')].each do |fname|
+  if File.directory? fname
+    name = File.basename(fname)
+    require "genmachine/generators/#{name}/#{name}"
+  end
 end
 
 module GenMachine
