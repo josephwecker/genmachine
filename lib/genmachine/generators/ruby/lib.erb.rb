@@ -158,7 +158,7 @@ module <%= @classname %>
 
 <%- @spec_ast.each do |name, otype, args, cmds, first_state, states| -%>
   <%- args << "p=nil" -%>
-  <%- args << "name='#{name}'" -%>
+  <%- args << "name=UString.new('#{name}')" -%>
     def <%= name %>(<%= args.join(',') %>)
       <%- cmds.each do |c| -%>
       <%= rb_vars(c) %>
