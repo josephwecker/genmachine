@@ -3,6 +3,7 @@ $KCODE="U"
 
 class Integer
   def into(v); v << self end
+  def into!(v); into(v) end
   def reset!; :nop end
   def reset; :nop end
 end
@@ -13,15 +14,14 @@ module <%= @classname %>
 
 
   class UArray < Array
-    def into(v)
-      return if size == 0
-      v << self
-    end
+    def into(v); into!(v) unless size == 0 end
+    def into!(v); v << self end
     def reset!; self.clear end
     def reset; d=dup;d.reset!;d end
   end
 
   class UHash < Hash
+    def into!(v) v << self end
     def into(v) v << self end
     def <<(kv) k,v = kv; self[k] = v end
     def reset!; self.clear end
@@ -29,8 +29,8 @@ module <%= @classname %>
   end
 
   class UString < String
-    def into(v)
-      return if size == 0
+    def into(v); into!(v) unless size == 0 end
+    def into!(v)
       v << self.dup
       reset!
     end
@@ -53,6 +53,7 @@ module <%= @classname %>
       @c= params.delete(:c) || []
       @name = params.delete(:name)
     end
+    def into!(val) val << self end
     def into(val) val << self end
     def <<(val) @c<<val end
     def [](key) @c[key] end
