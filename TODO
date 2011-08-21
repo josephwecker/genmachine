@@ -1,7 +1,7 @@
  - Fix "unexpected ..." so it works again
  - Automatically put {eof?} (by itself) clauses at beginning
  - Get per-state eof? detection working again (for final else clause)
-
+ - Errors when state isn't present. Warnings even if it is never referenced
  - highlight `c` specially
  - Allow `b<<` etc. in statements - implied 'c' source
 
