@@ -211,7 +211,7 @@ module <%= @classname %>
         <%- end -%>
         end
         <%- if has_fallthru -%>
-        error("Unexpected #{<%= INPUT %>}")
+        error("Unexpected \"#{[<%= INPUT %>].pack("U*")}\"")
         @fwd = true
         return
         <%- end -%>
