@@ -39,7 +39,7 @@ syn match   gmSpecState   /\s*{[^}]\+}\s*/ contained
 syn match   gmState       /\s*:[^ )({}]\+\s*/ contained
 syn match   gmGlobals     /\$\w\+/ contained
 
-syn region  gmRange       start=/\[/ end=/\]/ skip=/\\\]/ keepend contained contains=gmSpecMetas,gmMetachars,gmRangeDelims
+syn region  gmRange       start=/\[/ end=/\]/ skip=/\\./ keepend contained contains=gmSpecMetas,gmMetachars,gmRangeDelims
 syn match   gmSpecMetas   /\\s\|\\n/ contained
 syn match   gmMetachars   /\\t\|\\r\|\\f\|\\b\|\\a\|\\e\|\\\[\|\\\]\|\\\\/ contained
 syn match   gmRangeDelims /\\\@!\[\|\\\@!]/ contained
