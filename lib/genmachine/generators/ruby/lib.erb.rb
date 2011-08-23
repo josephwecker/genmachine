@@ -22,18 +22,18 @@ class String
   def reset; d=dup;d.reset!;d end
 end
 
+class Array
+  def into(v); into!(v) unless size == 0 end
+  def into!(v); v << self end
+  def reset!; self.clear end
+  def reset; d=dup;d.reset!;d end
+end
 
 module <%= @classname %>
   def self.parse(str) Parser.new(str).parse end
   def self.parse_file(fname) Parser.new(IO.read(fname)).parse end
 
 
-  class UArray < Array
-    def into(v); into!(v) unless size == 0 end
-    def into!(v); v << self end
-    def reset!; self.clear end
-    def reset; d=dup;d.reset!;d end
-  end
 
   class UHash < Hash
     def into!(v) v << self end
@@ -168,7 +168,7 @@ module <%= @classname %>
         <%- if otype == 'U' -%>
       s = UNode.new(:name=>name,:sline=>@line,:schr=>@pos)
         <%- elsif otype == '[]' -%>
-      s = UArray.new
+      s = []
         <%- elsif otype == '{}' -%>
       s = UHash.new
         <%- end -%>
