@@ -1,3 +1,5 @@
+ - Correctly detect badly formatted row - wrong number of delimiters, etc.
+ - Fix unexpected :eof so it doesn't do the weird unicode char
  - Fix "unexpected ..." so it works again
  - Automatically put {eof?} (by itself) clauses at beginning
  - Get per-state eof? detection working again (for final else clause)
