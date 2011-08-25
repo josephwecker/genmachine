@@ -1,0 +1,74 @@
++------------------------------+-----------------+---------------------+
+[ genmachine():[]              |                 | :nextset            |
++------------------+-----------+-----+-----------+---------------------+
+| :nextset         | [\[]      | >>  |           | ruleset()/:nextset  |
+|                  | [\n\t ]   | >>  |           | ->                  |
+|                  | [|]       | >>  |           | <error>             | You haven't yet started a rule definition.
+|                  | .         | >>  |           | :nextset:comment    |
++                  +-----------+-----+-----------+---------------------+
+| :nextset:comment | [\n]      | >>  |           | :nextset            |
+|                  | .         | >>  |           | ->                  |
++                  +-----------+-----+-----------+---------------------+
+| {eof}            |           |     |           | <done>              |
++------------------+-----------+-----+-----------+---------------------+
+
+
+|node{parent}.U
+    ipar = %indent
+    ibase = ipar+1
+    @indent
+  |state[ident] #-------------------+------------------------------------------
+      : eof?    : self>>parent      | <done>
+      : [ \t]   : >>                | @next
+      : [\n]    : >>                | @nl
+      : [.{\[]  :                   | @next
+      : .       : @//cstr{$name}    | @next
+    |state[next]
+      : eof?    : self>>parent      | <done>
+      : [\[]    : >> | idstr{s[id]} | @.
+      : [.]     : >> | cstr{s.tags} | @.
+      : [\:]    : >> | cstr{k}      | @../attribute/value/st
+      : [\n]    : >>                | @../nl
+      : [ \t]   : >>                | @.
+      : .       :                   | @//children
+    |state[nl]
+      : eof?    : self>>parent      | <done>
+      : [ \t\n] : >>                | @.
+      : %d<=ipar: self>>parent      | <done>
+      : .       : ibase=%d          | @../next
+  |state[attribute] #---------------+------------------------------------------
+
+ Nodes
++-----------------------------------+-----------------------+------------------------+
+[ node(p):U                         | ipar=$indent          | :ident                 |
+:                                   : ibase=ipar+1          :                        :
++-----------------+-----------------+-----+-----------------+------------------------+
+| :ident          | {eof?}          |     | s>>p            | <retstate>             |
+|                 | [ \t]           | >>  |                 | :ident:nxt             |
+|                 | [\n]            | >>  |                 | :ident:nl              |
+|                 | [.{\[]          |     |                 | :ident:nxt             |
+|                 | .               |     | cstr(s.name)    | :ident:nxt             |
++-----------------+-----------------+-----+-----------------+------------------------+
+| :ident:nxt      | {eof?}          |     | s>>p            | <retstate>             |
+|                 | [\[]            | >>  | idstr()>>s[id]  | ->                     |
+|                 | [.]             | >>  | cstr()>>s.tags  | ->                     |
+|                 | [:]             | >>  | cstr()>>k       | :attribute:value:st    |
+|                 | [\n]            | >>  |                 | :ident:nl              |
+|                 | [ \t]           | >>  |                 | ->                     |
+|                 | .               |     |                 | :children              |
++-----------------+-----------------+-----+-----------------+------------------------+
+| :ident:nl       | {eof?}          |     | s>>p            | <return p>             |
+| :ident:nl       | [ \t]           | >>  |                 | ->                     |
+| :ident:nl       | [\n]            | >>  |                 | ->                     |
+| :ident:nl       | {$indent<=ipar} |     | s>>p            | <return p>             |
+| :ident:nl       | .               |     | ibase=$indent   | :ident:nxt             |
++-----------------+-----------------+-----+-----------------+------------------------+
+| :attribute:value:st | [ \t]       | >>  |                 | :attribute:value:st    |
+| :attribute:value:st | [\n]        | >>  |                 | :attribute:value:nl    |
+| :attribute:value:st | .           |     |                 | :attribute:value       |
++-----------------+-----------------+-----+-----------------+------------------------+
+| :children       | {eof?}          |     | s>>p            | <retstate>             |
+| :children       | [\n]            | >>  | a>>s; s>>p      | <retstate>             |
+| :children       | .               | >>a |                 | :children              |
+
+
