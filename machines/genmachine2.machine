@@ -1,4 +1,26 @@
-Genmachine self parser- to be run through the bootstrapping ruby parser
+Genmachine self parser- to be run through the bootstrapping ruby parser part II
+
+|stateset[genmachine].nodu
+    |given parent
+    @nextset
+  |state[
+
+
+
+
+|nodu[nodu] .parent
+    ipar = %indent
+    ibase = ipar + 1
+    @identity
+  |state[identity]
+    : eof?    : self>>parent      | <done>
+    : [ \t]   : >>                | @next
+    : [\n]    : >>                | @nl
+    : [.{\[]  :                   | @next
+    : .       : @//cstr{$name}    | @next
+  |state[identity/next]
+
+
 
 [ genmachine():[]                  |                 | :nextset          |
 
