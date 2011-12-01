@@ -1,0 +1,45 @@
+Genmachine self parser- to be run through the bootstrapping ruby parser part II
+
+|stateset[genmachine].nodu
+    |given parent
+    @nextset
+  |state[
+
+
+
+
+|nodu[nodu] .parent
+    ipar = %indent
+    ibase = ipar + 1
+    @identity
+  |state[identity]
+    : eof?    : self>>parent      | <done>
+    : [ \t]   : >>                | @next
+    : [\n]    : >>                | @nl
+    : [.{\[]  :                   | @next
+    : .       : @//cstr{$name}    | @next
+  |state[identity/next]
+
+
+
+[ genmachine():[]                  |                 | :nextset          |
+
+| genmachine()::[] |               |     |           | :nextset          |
+| :nextset         | [\[]          | >>  |           | ruleset(:nextset) |
+| :nextset         | [\n\t ]       | >>  |           | :nextset          |
+| :nextset         | [|]           | >>  |           | <error>           | You haven't yet started a rule definition.
+| :nextset         | .             | >>  |           | :nextset:comment  |
+| :nextset:comment | [\n]          | >>  |           | :nextset          |
+| :nextset:comment | .             | >>  |           | :nextset:comment  |
+| {eof}            |               |     |           | <done>            |
+
+[ ruleset(retstate):[]             |                 | :ruledef:start    |
+
+| ruleset(rstate)  |               |     | s.name>>  | :ruledef:start    |
+| :ruledef:start   | [ \t]         | >>  |           | :ruledef:start    |
+| :ruledef:start   | [|]           | >>  |           | :acceptor:start   |
+| :ruledef:start   | [^\n]         |     |           | :ruledef:name:s   |
+| :ruledef:name:s  | [a-zA-Z_-]    | >>a |           | :ruledef:name     |
+| :ruledef:name    | [A-Za-z0-9_-] | >>a |           | :ruledef:name     |
+| :ruledef:name    | [(]           | >>  | a>>s.name | :ruledef:params:s |
+

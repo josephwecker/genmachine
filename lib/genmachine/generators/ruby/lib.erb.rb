@@ -3,8 +3,30 @@ $KCODE="U"
 
 class Integer
   def into(v); v << self end
+  def into!(v); into(v) end
   def reset!; :nop end
   def reset; :nop end
+end
+
+class String
+  def into(v); into!(v) unless size == 0 end
+  def into!(v); v << self.dup; reset!  end
+  def <<(v)
+    begin
+      concat([v].pack('U*'))
+    rescue
+      concat(v)
+    end
+  end
+  def reset!; self.gsub! /./um,'' end
+  def reset; d=dup;d.reset!;d end
+end
+
+class Array
+  def into(v); into!(v) unless size == 0 end
+  def into!(v); v << self end
+  def reset!; self.clear end
+  def reset; d=dup;d.reset!;d end
 end
 
 module <%= @classname %>
@@ -12,35 +34,13 @@ module <%= @classname %>
   def self.parse_file(fname) Parser.new(IO.read(fname)).parse end
 
 
-  class UArray < Array
-    def into(v)
-      return if size == 0
-      v << self
-    end
-    def reset!; self.clear end
-    def reset; d=dup;d.reset!;d end
-  end
 
   class UHash < Hash
+    def into!(v) v << self end
     def into(v) v << self end
     def <<(kv) k,v = kv; self[k] = v end
     def reset!; self.clear end
     def reset; d=dup; d.reset!; d end
-  end
-
-  class UString < String
-    def into(v)
-      return if size == 0
-      v << self.dup
-      reset!
-    end
-
-    def <<(v)
-      begin; super([v].pack('U*'))
-      rescue; super(v) end
-    end
-    def reset!; self.gsub! /./um,'' end
-    def reset; d=dup;d.reset!;d end
   end
 
   class UNode
@@ -53,6 +53,7 @@ module <%= @classname %>
       @c= params.delete(:c) || []
       @name = params.delete(:name)
     end
+    def into!(val) val << self end
     def into(val) val << self end
     def <<(val) @c<<val end
     def [](key) @c[key] end
@@ -122,12 +123,12 @@ module <%= @classname %>
         @leading = true; @indent = 0
       when 0x0a
         nc = peek(4).unpack('U')[0]
-        if nc == 0x0d then getch; c = UString.new("\n\r") end
+        if nc == 0x0d then getch; c = "\n\r" end
         @last_is_newline = true; @line += 1; @pos = 1
         @leading = true; @indent = 0
       when 0x0d
         nc = peek(4).unpack('U')[0]
-        if nc == 0x0a then getch; c = UString.new("\r\n") end
+        if nc == 0x0a then getch; c = "\r\n" end
         @last_is_newline = true; @line += 1; @pos = 1
         @leading = true; @indent = 0
       when 0x20,0x09
@@ -167,13 +168,13 @@ module <%= @classname %>
         <%- if otype == 'U' -%>
       s = UNode.new(:name=>name,:sline=>@line,:schr=>@pos)
         <%- elsif otype == '[]' -%>
-      s = UArray.new
+      s = []
         <%- elsif otype == '{}' -%>
       s = UHash.new
         <%- end -%>
       <%- end -%>
       <%- accumulators(states).each do |_acc| -%>
-      <%= _acc %> ||= UString.new
+      <%= _acc %> ||= ''
       <%- end -%>
       loop do
         <%= INPUT %> = nextchar
@@ -210,7 +211,7 @@ module <%= @classname %>
         <%- end -%>
         end
         <%- if has_fallthru -%>
-        error("Unexpected #{<%= INPUT %>}")
+        error("Unexpected \"#{[<%= INPUT %>].pack("U*")}\"")
         @fwd = true
         return
         <%- end -%>

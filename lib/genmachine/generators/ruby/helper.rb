@@ -105,10 +105,12 @@ module GenMachine
           return ['@fwd=true']
         when acc_phrase.strip == '>>'
           return []
-        when acc_phrase =~ /^\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*>>\s*$/
+        when acc_phrase =~ /^\s*([a-zA-Z_][a-zA-Z0-9_.]*)\s*>>\s*$/
           return ["#{rb_vars($1)}.reset!"]
-        when acc_phrase =~ /^\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*>>\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*$/
+        when acc_phrase =~ /^\s*(["'a-zA-Z_][^>]*)\s*>>\s*([a-zA-Z_][a-zA-Z0-9_.]*)\s*$/
           return ["#{rb_vars($1)}.into(#{rb_vars($2)})"]
+        when acc_phrase =~ /^\s*(["'a-zA-Z_][^>]*)\s*>>>\s*([a-zA-Z_][a-zA-Z0-9_.]*)\s*$/
+          return ["#{rb_vars($1)}.into!(#{rb_vars($2)})"]
         else raise("Can't figure out your accumulator statement: #{acc_phrase}")
         end
       end

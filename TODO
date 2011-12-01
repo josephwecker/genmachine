@@ -1,3 +1,13 @@
+ - <error> return value / nextstate
+ - built in error / warning state has an additional column with the text
+   message
+ - Allow warning state AND actual next state   | <warn> :nextstate | The warning message
+ - Correctly detect badly formatted row - wrong number of delimiters, etc.
+ - Fix unexpected :eof so it doesn't do the weird unicode char
+ - Fix "unexpected ..." so it works again
+ - Automatically put {eof?} (by itself) clauses at beginning
+ - Get per-state eof? detection working again (for final else clause)
+ - Errors when state isn't present. Warnings even if it is never referenced
  - highlight `c` specially
  - Allow `b<<` etc. in statements - implied 'c' source
 
@@ -12,3 +22,9 @@
  - bootstrap a real spec parser with a real intermediate language
  - full test suite that languages can essentially inherit from for testing
    their implementations.
+
+
+Super-optimized c-version
+http://www.cfd-online.com/Forums/openfoam-installation/57528-taking-advantage-gccbs-profilearcs-optimization.html
+http://www.eventhelix.com/realtimemantra/basics/optimizingcandcppcode.htm
+

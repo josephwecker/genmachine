@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{genmachine}
-  s.version = "0.2.1"
+  s.version = "0.2.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Joseph Wecker"]
-  s.date = %q{2011-08-19}
+  s.date = %q{2011-08-23}
   s.default_executable = %q{genmachine}
   s.description = %q{Takes a state table where the following are defined: state, input+conditions, accumulate-action, pre-transition-actions, and transition-to. It takes that state table and generates very fast parsers. Similar to Ragel. Currently only outputs pure Ruby.}
   s.email = %q{joseph.wecker@gmail.com}

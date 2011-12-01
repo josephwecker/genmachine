@@ -83,6 +83,8 @@ module GenMachine
     def parse_input(val,inputs=nil)
       iters = 0
       conds = []
+      val.gsub! /([^\\])\\\[/, '\1<left-square-bracket>'
+      val.gsub! /([^\\])\\\]/, '\1<right-square-bracket>'
       while val.strip.length > 0 && iters < 100
         case
         when val =~ /--+/um
@@ -112,10 +114,11 @@ module GenMachine
                '\r' => "\r", '\f' => "\f",
                '\b' => "\b", '\a' => "\a",
                '\e' => "\e", '\s' => " ",
-               '\[' => '[',  '\]' => ']',
                "\\\\" => '\\'}
     def parse_combine_ranges(raw, input)
-      raw.gsub!(/\\[tnrfbaes\[\]]/){|m| ESCAPES[m]}
+      raw.gsub!(/\\[tnrfbaes\\]/){|m| ESCAPES[m]}
+      raw.gsub!('<left-square-bracket>', '[')
+      raw.gsub!('<right-square-bracket>', ']')
       if raw =~ /((?:.-.)*)((?:.)*)/um
         ranges = $1
         singles = $2
