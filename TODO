@@ -1,6 +1,11 @@
  - highlight `c` specially
  - Allow `b<<` etc. in statements - implied 'c' source
 
+ - Allow state-group initiator statements
+ - $indent_last
+
+ - Better ability to do return values and specify post-facto states
+
  - mechanism for simple nondeterminism
  - syn highlight
  - parser generator implementation notes / examples
