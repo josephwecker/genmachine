@@ -1,4 +1,23 @@
 
+
+
+Unicode-
+  autodetect
+  manually convert
+  manually set
+  utf-8
+  utf-16BE
+  utf-16LE
+  utf-32BE
+  utf-32LE
+
+  bad encoding needs to be replaced when aggregated (RFC 3629), set an
+  aggregator "problem" flag, AND store the original unmodified binary value
+
+  Replacement procedure: (The invalid Unicode code points U+DC80..U+DCFF where
+  the low 8 bits are the byte's value or Interpret the bytes according to
+  another encoding (often ISO-8859-1 or CP1252).)
+
 Given:
   A pointer into an array
   A length of bytes available

@@ -1,0 +1,89 @@
+int parse(pstate *state) {
+    int found = 0;
+    UNPACK_STATE();
+
+    /* NORMAL LOOP (with all optimizations, if statement same as switch)
+     * 0m2.162s
+     */
+
+    while(curr <= eof) {
+        if(*curr == '{' || *curr == '[' || *curr == '#') {
+            found ++;
+        }
+        curr++;
+    }
+
+    // CASE statement- surprisingly performs much worse than loop above unless
+    // all gcc optimizations are turned on. All of the below give better
+    // results than both though (about twice as fast)
+    while(curr <= eof) {
+        switch(*curr) {
+            case '{':
+            case '[':
+            case '#':
+                found++;
+        }
+        curr++;
+    }
+
+
+
+    int i;
+    //while(curr <= eof) {
+        //qcurr = (uint64_t *)curr;
+        while(qcurr <= qeof) {
+            // 0x87 is a bitmask that uncovers only the "shared" bits from the
+            // search set. then sees if one of those is the same as those bits
+            // being searched for ('[' & '{' & '#').
+            // FASTEST: 0m593s  when just '[' & '{'  (prefilter: v & 0xdf == 0x5b) - commonbits: 7
+            // SLOWER than easy loop when '[' & '{' & '#'  (prefilter: v & 0x87 == 0x03) - commonbits: 4
+            //if(q_hasval(*qcurr & 0xdfdfdfdfdfdfdfdf, 0x5b)) {
+            //if(q_hasval(*qcurr & 0xdfdfdfdfdfdfdfdf, 0x5b)) {
+                if(q_hasval(*qcurr,'{') || q_hasval(*qcurr,'[')) {
+                    curr = (char *)qcurr;
+                    while((curr <= eof) && (*curr != '{') && (*curr != '['))
+                        curr++;
+                    if(curr <= eof) found++;
+                    else return found;
+                    //curr ++;
+                    qcurr = (uint64_t *)(curr + 1);
+                } else qcurr++;
+            } else qcurr++;
+            //qcurr++;
+        }
+        //curr = (char *)qcurr + 1;
+    //}*/
+
+    // 0m0.635s - without prefilter
+    while(curr <= eof) {
+        qcurr = (uint64_t *)curr;
+        //while((qcurr <= qeof) && !q_hasval(*qcurr & 0x8787878787878787, 0x03) && !q_hasval(*qcurr,'{') && !q_hasval(*qcurr,'[') && !q_hasval(*qcurr,'#'))
+        //while((qcurr <= qeof) && !q_hasval(*qcurr,'{') && !q_hasval(*qcurr,'[') && !q_hasval(*qcurr,'#'))
+        //while((qcurr <= qeof) && !q_hasval(*qcurr,'{') && !q_hasval(*qcurr,'['))
+        while((qcurr <= qeof) && !q_hasval(*qcurr & 0xdfdfdfdfdfdfdfdf, 0x5b) && !q_hasval(*qcurr,'{') && !q_hasval(*qcurr,'['))
+            qcurr++;
+        curr = (char *)qcurr;
+        //while((curr <= eof) && (*curr != '{') && (*curr != '[') && (*curr != '#'))
+        while((curr <= eof) && (*curr != '{') && (*curr != '['))
+            curr++;
+        if(curr <= eof) found++;
+        curr ++;
+    }
+    /* Big-small-loop
+    // BEST W/ ALL THREE - NOT AS GOOD AS PREFILTER WHEN 7 bits in common (see
+     * 0m0.872s before gcc optimizations etc.
+     */
+    while(curr <= eof) {
+        qcurr = (uint64_t *)curr;
+        while((qcurr <= qeof) && !q_hasval(*qcurr,'{') && !q_hasval(*qcurr,'[') && !q_hasval(*qcurr,'#'))
+            qcurr++;
+        curr = (char *)qcurr;
+        while((curr <= eof) && (*curr != '{') && (*curr != '[') && (*curr != '#'))
+            curr++;
+        if(curr <= eof) { found++; printf("%c", *curr); }
+        curr ++;
+    }
+
+    return found;
+}
+
